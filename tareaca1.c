@@ -57,9 +57,22 @@ int main(){
         }
       }
       copiar(temp,i);
-
-      fgets(temp, 6, inventario);//6 caracteres que puede llegar a leer de precio
-      prod[i].precio = atoi(temp);
+      //almacenando precios
+      int it=0;
+      char temp2[20];
+      while(!feof(inventario)){
+      
+        if(fgetc(inventario)==','){
+          prod[i].precio=atoi(temp2);
+          break;
+        }else{
+          fgetc(inventario)==temp2[it];
+          it++;
+          
+        }
+      }
+      //fgets(temp, 6, inventario);//6 caracteres que puede llegar a leer de precio
+      //prod[i].precio = atoi(temp);
 
       fgets(temp, 4, inventario);
       prod[i].id = atoi(temp);
