@@ -54,7 +54,7 @@ int main(){
     for(i = 0; !feof(inventario) ; i++){
       vaciar(temp);
       aux = '0';
-      for(j = 0; a!=1; j++){
+      for(j = 0; a%2!=1; j++){
         aux=fgetc(inventario);
         if(aux==',')a++;
         if(a!=1){
@@ -64,7 +64,7 @@ int main(){
       copiar(temp,i);
       //almacenando precios
       
-      for(j=0;a!=2;j++){
+      for(j=0;a%2!=0;j++){
         aux=fgetc(inventario);
         if(aux==',')a++;
         if(a!=2){
@@ -77,10 +77,10 @@ int main(){
       /*fgets(temp, 6, inventario);//6 caracteres que puede llegar a leer de precio
       prod[i].precio = atoi(temp);*/
       //fin de almacenar los precios
-      fgets(temp, 4, inventario);
+      fgets(temp,3, inventario);
       prod[i].id = atoi(temp);
       
-      fgets(temp,6, inventario);
+      fgets(temp,10, inventario);
       prod[i].tiempo = atoi(temp);
       printf("Nombre producto: %s Precio: %d ID: %d Tiempo de elaboracion: %d \n",prod[i].nombre,prod[i].precio, prod[i].id, prod[i].tiempo);
     }
