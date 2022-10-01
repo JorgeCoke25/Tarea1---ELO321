@@ -24,12 +24,16 @@ void copiar(char temp[], int i){
   prod[i].nombre = (char*)malloc(N*sizeof(char));
   strcpy(prod[i].nombre,temp);
 } 
+void copiarPrecio(char temp[], int i){
+  //prod[i].precio = (int)malloc(sizeof(int));
+  prod[i].precio=atoi(temp);
+} 
 /////////////////
 int main(){
 
-    pid_t repartidor1,repartidor2;
+    pid_t repartidor2;
     int tubo[2];
-    pipe(tubo);
+    //pipe(tubo);
 
     FILE *inventario, *pedidos; // procedimiento Cajero
     inventario = fopen("inventario.txt", "r");
@@ -45,68 +49,60 @@ int main(){
     }
     rewind(inventario);
     prod = (producto*)malloc(cont*sizeof(producto));
-
-    int i,j;
+    
+    int i,j,a=0;
     for(i = 0; !feof(inventario) ; i++){
       vaciar(temp);
       aux = '0';
-      for(j = 0; aux != ','; j++){
+      for(j = 0; a!=1; j++){
         aux=fgetc(inventario);
-        if(aux!=','){
+        if(aux==',')a++;
+        if(a!=1){
           temp[j]=aux;
         }
       }
       copiar(temp,i);
       //almacenando precios
-      int it=0;
-      char temp2[20];
-      while(!feof(inventario)){
       
-        if(fgetc(inventario)==','){
-          prod[i].precio=atoi(temp2);
-          break;
-        }else{
-          fgetc(inventario)==temp2[it];
-          it++;
-          
+      for(j=0;a!=2;j++){
+        aux=fgetc(inventario);
+        if(aux==',')a++;
+        if(a!=2){
+          temp[j]=aux;
         }
       }
-      //fgets(temp, 6, inventario);//6 caracteres que puede llegar a leer de precio
-      //prod[i].precio = atoi(temp);
-
+      copiarPrecio(temp,i);
+      
+      
+      /*fgets(temp, 6, inventario);//6 caracteres que puede llegar a leer de precio
+      prod[i].precio = atoi(temp);*/
+      //fin de almacenar los precios
       fgets(temp, 4, inventario);
       prod[i].id = atoi(temp);
-
+      
       fgets(temp,6, inventario);
       prod[i].tiempo = atoi(temp);
       printf("Nombre producto: %s Precio: %d ID: %d Tiempo de elaboracion: %d \n",prod[i].nombre,prod[i].precio, prod[i].id, prod[i].tiempo);
-    }// Fin de almacenar el txt en la estructura
-    char *contents = NULL;
-    size_t len = 0;
-    char *ped = (char) malloc(120);
-    int c=0;
-    while (getline(&contents, &len, pedidos) != -1){
-        ped[c]=contents;
-        c++;
     }
-
-    repartidor1 = fork();  //inicializando hijo 1
-    if(repartidor1==0){ //proceso hijo 1
-        printf("soy el repartidor 1 jojojo\n");
-    }
-    else if (repartidor1<0){
+    
+    // Fin de almacenar el txt en la estructura
+    
+    pid_t repartidor1 = fork();  //inicializando hijo 1
+    if(repartidor1<0){
         printf("Ocurrio un error con repartidor1");
         return 1;
+    }else if(repartidor1==0){ //proceso hijo 1
+        printf("soy el repartidor 1 jojojo\n");
     }
 
     repartidor2 = fork();  //inicializando hijo 2
-    if(repartidor2==0){ //proceso hijo 2
-        printf("soy el repartidor 2 jojojo\n");
-    }
-    else if (repartidor2<0){
+    if(repartidor2<0){
         printf("Ocurrio un error con repartidor2");
         return 1;
+    }else if(repartidor2==0){ //proceso hijo 2
+        printf("soy el repartidor 2 jojojo\n");
     }
+
     return 0;
 
 }
