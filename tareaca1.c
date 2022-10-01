@@ -66,6 +66,7 @@ int main(){
 
       
       for(j=0;a%2!=0;j++){
+
         aux=fgetc(inventario);
         if(aux==',')a++;
         if(a!=2){
@@ -86,7 +87,28 @@ int main(){
 
     }
     // Fin de almacenar el txt en la estructura
-    
+    char strLine[50];
+    char* buffer[100];
+
+    cont = 0;
+    while (fgets(strLine, 50, pedidos)){
+        printf("%s",strLine);
+        char *token = strtok(strLine, ",");
+        buffer[cont]=token;
+        cont++;
+        if(token != NULL){
+            printf("Encontramos un token: %s\n", token);
+            while(token != NULL){
+                // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
+                printf("Token: %s\n", token);
+                token = strtok(NULL, ",");
+                buffer[cont]=token;
+                cont++;
+            }
+            cont=0;
+        }
+    }
+    printf("%s\n",buffer[2]);
     pid_t repartidor1 = fork();  //inicializando hijo 1
     if(repartidor1<0){
         printf("Ocurrio un error con repartidor1");
