@@ -62,7 +62,8 @@ int main(){
         }
       }
       copiar(temp,i);
-      //almacenando precios
+      //almacenando precios      printf("%d\nxd",atoi(temp));
+
       
       for(j=0;a%2!=0;j++){
         aux=fgetc(inventario);
@@ -77,14 +78,13 @@ int main(){
       /*fgets(temp, 6, inventario);//6 caracteres que puede llegar a leer de precio
       prod[i].precio = atoi(temp);*/
       //fin de almacenar los precios
-      fgets(temp,3, inventario);
+      fgets(temp,4, inventario);
       prod[i].id = atoi(temp);
-      
       fgets(temp,10, inventario);
       prod[i].tiempo = atoi(temp);
       printf("Nombre producto: %s Precio: %d ID: %d Tiempo de elaboracion: %d \n",prod[i].nombre,prod[i].precio, prod[i].id, prod[i].tiempo);
+
     }
-    
     // Fin de almacenar el txt en la estructura
     
     pid_t repartidor1 = fork();  //inicializando hijo 1
