@@ -118,8 +118,9 @@ int main(){
                 cont++;//Se suma uno  a la posicion
                 token = strtok(NULL, ",");//Siguiente producto
             }
+            buffer[cont]=0;
             close(tubo[0]);
-            write(tubo[1],buffer,cont*sizeof(int));
+            write(tubo[1],buffer,(cont+1)*sizeof(int));
             wait(NULL);
             cont=0;
         }
@@ -139,7 +140,7 @@ int main(){
             if(i==10 || buff[0]==0){
                 break;
             }
-            printf("Buffer: %d - Iteracion numero: %d\n",buffer[0],i);
+            printf("Buffer: %d - Iteracion numero: %d\n",buff[0],i);
         }
 
     }
