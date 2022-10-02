@@ -166,6 +166,18 @@ int main(){
         }
     }else if(repartidor2==0){ //proceso hijo 2
         printf("soy el repartidor 2 jojojo\n");
+        int buff[1];//Variable de lectura
+        close(tubo[1]);//Se cierra el modo escritura
+        int i =0;
+        while (1){
+            read(tubo[0],buff,sizeof(int));//Modo lectura de 2 enteros
+            i++;
+            if(i==10 || buff[0]==0){
+                break;
+            }
+            printf("Buffer: %d - Iteracion numero: %d\n",buff[0],i);
+        }
+        close(tubo[0]);
     }
 
     return 0;
