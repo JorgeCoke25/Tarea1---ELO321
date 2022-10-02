@@ -39,14 +39,13 @@ int obtenerId(char* str){
         }
         i++;
     }
-    return 0;
 }
 /////////////////
 int main(){
 
-    pid_t repartidor2;
+    pid_t repartidor1,repartidor2;
     int tubo[2];
-    //pipe(tubo);
+    pipe(tubo);
 
     FILE *inventario, *pedidos; // procedimiento Cajero
     inventario = fopen("inventario.txt", "r");
@@ -55,7 +54,6 @@ int main(){
     // Almacenando el archivo de texto en la estructura producto
     char temp[50];
     int cont=0;
-    char aux;
     while(!feof(inventario)){
       fgets(temp,50,inventario);
       cont++;
@@ -108,9 +106,6 @@ int main(){
         strLine[strlen(strLine)-1]='\0';
         //Se toma el primer producto de el pedido
         char *token = strtok(strLine, ",");
-        //Se pasa al buffer el id del primer producto
-        buffer[cont]=obtenerId(token);
-        cont++;
         if(token != NULL){
             while(token != NULL){
                 // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
@@ -119,16 +114,14 @@ int main(){
                 token = strtok(NULL, ",");//Siguiente producto
             }
             buffer[cont]=0;
-            close(tubo[0]);
-            write(tubo[1],buffer,(cont+1)*sizeof(int));
+            write(tubo[1],buffer,sizeof(int)*10);
             wait(NULL);
             cont=0;
         }
     }
-    pid_t repartidor1 = fork();  //inicializando hijo 1
-    if(repartidor1<0){
-        printf("Ocurrio un error con repartidor1");
-        return 1;
+    repartidor1 = fork();  //inicializando hijo 1
+    if(repartidor1>0){
+        close(tubo[0]);
     }else if(repartidor1==0){ //proceso hijo 1
         printf("soy el repartidor 1 jojojo\n");
         int buff[1];//Variable de lectura
@@ -142,7 +135,6 @@ int main(){
             }
             printf("Buffer: %d - Iteracion numero: %d\n",buff[0],i);
         }
-
     }
 
     repartidor2 = fork();  //inicializando hijo 2
