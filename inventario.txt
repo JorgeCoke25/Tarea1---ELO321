@@ -1,6 +1,6 @@
-Sandwich ,500 ,1 ,15
-Cafe ,1000,2 ,25
-Brownie ,800 ,3 ,5
-Chocolate ,1200,4 ,7
-Agua ,700 ,5 ,10
-Pepsi ,1000,6 ,10
+Sandwich,500,1,15
+Cafe,1000,2,25
+Brownie,800,3,5
+Chocolate,1200,4,7
+Agua,700,5,10
+Pepsi,1000,6,10
