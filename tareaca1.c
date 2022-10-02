@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wait.h>
+
 typedef struct{
     char *nombre;
     int precio;
@@ -89,7 +91,7 @@ int main(){
     // Fin de almacenar el txt en la estructura
     char strLine[50];
     char* buffer[100];
-
+    //Lectura de los pedidos para guardarlos en el buffer
     cont = 0;
     while (fgets(strLine, 50, pedidos)){
         char *token = strtok(strLine, ",");
@@ -102,6 +104,9 @@ int main(){
                 buffer[cont]=token;
                 cont++;
             }
+            close(tubo[0]);
+            write(tubo[1],buffer,sizeof(strLine));
+            wait(NULL);
             cont=0;
         }
         printf("%s\n",buffer[0]);
@@ -112,6 +117,18 @@ int main(){
         return 1;
     }else if(repartidor1==0){ //proceso hijo 1
         printf("soy el repartidor 1 jojojo\n");
+        char* buffer[1];//Variable de lectura
+        close(tubo[1]);//Se cierra el modo escritura
+        int i =0;
+        while (1){
+            read(tubo[0],buffer,8);//Modo de lectura 1 palabra
+            i++;
+            if(i==100 || buffer[0]==NULL){
+                break;
+            }
+            printf("Buffer: %s - Iteracion numero: %d\n",buffer[0],i);
+        }
+        
     }
 
     repartidor2 = fork();  //inicializando hijo 2
