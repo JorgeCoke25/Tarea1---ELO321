@@ -97,50 +97,73 @@ int main(){
 
     }
     // Fin de almacenar el txt en la estructura
-    char strLine[50];
-    int buffer[100];
-    //Lectura de los pedidos para guardarlos en el buffer
-    cont = 0;//contador que marca la posicion en el buffer
-    while (fgets(strLine, 50, pedidos)){
-        //Aca se elimina el ultimo caracter "\n" de la linea
-        strLine[strlen(strLine)-1]='\0';
-        //Se toma el primer producto de el pedido
-        char *token = strtok(strLine, ",");
-        if(token != NULL){
-            while(token != NULL){
-                // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
-                buffer[cont]= obtenerId(token); //Se pasa la id del producto leido al buffer
-                cont++;//Se suma uno  a la posicion
-                token = strtok(NULL, ",");//Siguiente producto
-            }
-            buffer[cont]=0;
-            write(tubo[1],buffer,sizeof(int)*10);
-            wait(NULL);
-            cont=0;
-        }
-    }
+
     repartidor1 = fork();  //inicializando hijo 1
     if(repartidor1>0){
-        close(tubo[0]);
+        char strLine[50];
+        //Lectura de los pedidos para guardarlos en el buffer
+        cont = 0;//contador que marca la posicion en el buffer
+        while (fgets(strLine, 50, pedidos)){
+            int buffer[100];
+            //Aca se elimina el ultimo caracter "\n" de la linea
+            strLine[strlen(strLine)-1]='\0';
+            //Se toma el primer producto de el pedido
+            char *token = strtok(strLine, ",");
+            if(token != NULL){
+                while(token != NULL){
+                    // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
+                    buffer[cont]= obtenerId(token); //Se pasa la id del producto leido al buffer
+                    cont++;//Se suma uno  a la posicion
+                    token = strtok(NULL, ",");//Siguiente producto
+                }
+                buffer[cont]=0;
+                write(tubo[1],buffer,sizeof(int)*100);
+                close(tubo[1]);//Se cierra modo escritura
+                wait(NULL);
+                cont=0;
+            }
+        }
     }else if(repartidor1==0){ //proceso hijo 1
         printf("soy el repartidor 1 jojojo\n");
         int buff[1];//Variable de lectura
         close(tubo[1]);//Se cierra el modo escritura
         int i =0;
         while (1){
-            read(tubo[0],buff, sizeof(int));//Modo de lectura 1 entero
+            read(tubo[0],buff,sizeof(int));//Modo lectura de 2 enteros
             i++;
             if(i==10 || buff[0]==0){
                 break;
             }
             printf("Buffer: %d - Iteracion numero: %d\n",buff[0],i);
         }
+        close(tubo[0]);
     }
 
     repartidor2 = fork();  //inicializando hijo 2
-    if(repartidor2<0){
-        printf("Ocurrio un error con repartidor2");
-        return 1;
+    if(repartidor2>0){
+        char strLine[50];
+        //Lectura de los pedidos para guardarlos en el buffer
+        cont = 0;//contador que marca la posicion en el buffer
+        while (fgets(strLine, 50, pedidos)){
+            int buffer[100];
+            //Aca se elimina el ultimo caracter "\n" de la linea
+            strLine[strlen(strLine)-1]='\0';
+            //Se toma el primer producto de el pedido
+            char *token = strtok(strLine, ",");
+            if(token != NULL){
+                while(token != NULL){
+                    // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
+                    buffer[cont]= obtenerId(token); //Se pasa la id del producto leido al buffer
+                    cont++;//Se suma uno  a la posicion
+                    token = strtok(NULL, ",");//Siguiente producto
+                }
+                buffer[cont]=0;
+                write(tubo[1],buffer,sizeof(int)*100);
+                close(tubo[1]);//Se cierra modo escritura
+                wait(NULL);
+                cont=0;
+            }
+        }
     }else if(repartidor2==0){ //proceso hijo 2
         printf("soy el repartidor 2 jojojo\n");
     }
