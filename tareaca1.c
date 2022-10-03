@@ -130,11 +130,13 @@ int main(){
         }
         lectura = fgets(strLine, 50, pedidos);
     }
+    printf("El precio acumulado es : $%d\n",total);
+
     repartidor1 = fork();  //inicializando hijo 1
-    if(repartidor1<0){
-        printf("Fallo en la creacion del hijo");
+    if(repartidor1>0){
+        printf("El precio acumulado es : $%d\n",total);
+        sleep(1);
     }else if(repartidor1==0){ //proceso hijo 1
-        printf("soy el repartidor 1 jojojo\n");
         int buff[1];//Variable de lectura
         close(tubo[1]);//Se cierra el modo escritura
         int espera = 0; //Variable que definira el tiempo de preparacion total del pedido
@@ -145,7 +147,7 @@ int main(){
             if(i==10 || buff[0]==0){
                 break;
             }
-            printf("Buffer: %d - Iteracion numero: %d - Repartidor 1\n",buff[0],i);
+            printf("Comida: %s - Iteracion numero: %d - Repartidor 1\n",prod[buff[0]-1].nombre,i);
             espera+=prod[buff[0]-1].tiempo;
             total+=prod[buff[0]-1].precio;
         }
@@ -154,10 +156,9 @@ int main(){
     }
 
     repartidor2 = fork();  //inicializando hijo 2
-    if(repartidor2<0){
-        printf("Fallo la creacion del hijo");
+    if(repartidor2>0){
+        printf("El precio acumulado es : $%d\n",total);
     }else if(repartidor2==0){ //proceso hijo 2
-        printf("soy el repartidor 2 jojojo\n");
         int buff[1];//Variable de lectura
         close(tubo[1]);//Se cierra el modo escritura
         int espera = 0; //Variable que definira el tiempo de preparacion total del pedido
@@ -168,14 +169,13 @@ int main(){
             if(i==10 || buff[0]==0){
                 break;
             }
-            printf("Buffer: %d - Iteracion numero: %d - Repartidor 2\n",buff[0],i);
+            printf("Comida: %s - Iteracion numero: %d - Repartidor 2\n",prod[buff[0]-1].nombre,i);
             espera+=prod[buff[0]-1].tiempo;
             total+=prod[buff[0]-1].precio;
         }
         usleep(espera);
         close(tubo[0]);
     }
-    printf("El total del día es : $%d\n",total);
     return 0;
 
 }
